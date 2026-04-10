@@ -1,21 +1,33 @@
-import { useState } from "react";
+import { useState, useRef } from 'react'; 
+import MemoInsert from './MemoInsert'; 
+import MemoList from './MemoList'; 
+import './index.css';
 
-function App() {
-  const[text, setText] = useState("");
+const App = () => { 
+  
+  const [memos, setMemos] = useState([]); 
+  const nextId = useRef(1);
 
-  function handleChange(e) {
-    setText(e.target.value);
-  }
+  const handleInsert = (text) => {
+    const memo = {
+      id: nextId.current,
+      text,
+    };
+    setMemos([memo, ...memos]); 
+    nextId.current += 1;
+  };
 
-  function handleClick() {
-    alert(text);
-  }
+  const handleRemove = (id) => {
+    setMemos(memos.filter((memo) => memo.id !== id));
+  };
 
   return (
-    <div>
-      <input type="text" onChange={handleChange}/>
-      <button onClick={handleClick}>확인</button>
+    <div className="container">
+      <h1 className="title">MemoList</h1>
+      <MemoInsert onInsert={handleInsert} />
+      <MemoList memos={memos} onRemove={handleRemove} />
     </div>
   );
-}
+};
+
 export default App;
